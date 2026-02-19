@@ -12,3 +12,20 @@ export interface AuthContextType {
     register: (email: string, password: string, name: string) => Promise<void>;
     logout: () => Promise<void>;
 }
+
+export interface Document {
+    id: string;
+    filename: string;
+    originalName: string;
+    fileSize: number;
+    mimeType: string;
+    uploadedAt: string;
+    tags: string[];
+    category?: string;
+}
+
+export interface UploadProgress {
+    loaded: number;
+    total: number;
+    percentage: number;
+}
