@@ -2,6 +2,7 @@ import express, {Application} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
+import documentRoutes from "./routes/documentRoutes.js";
 import {errorHandler} from "./middleware/errorHandler.js";
 import {connectDatabase} from "./config/database.js";
 import {env} from "./config/env.js";
@@ -9,7 +10,6 @@ import helmet from "helmet";
 
 const app: Application = express();
 
-app.use(cookieParser());
 app.use(helmet());
 app.use(
     cors({
@@ -19,8 +19,10 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/documents", documentRoutes);
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({status: "ok", message: "Server is running"});
