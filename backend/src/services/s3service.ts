@@ -7,7 +7,6 @@ import {
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
 import {s3client, S3_BUCKET} from "../config/aws.js";
 import crypto from "crypto";
-import {fa, ur} from "zod/locales";
 
 export const uploadToS3 = async (
     file: Express.Multer.File,

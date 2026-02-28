@@ -7,6 +7,7 @@ import {
     getPresignedUrl,
     deleteFromS3,
 } from "../services/s3service.js";
+import {triggerTextExtraction} from "../services/lambdaService.js";
 
 export const uploadDocument = async (
     req: AuthRequest,
@@ -166,4 +167,25 @@ export const deleteDocument = async (
         console.error("Delete document error: ", err);
         res.status(500).json({message: "Failed to delete document"});
     }
+};
+
+export const getExtractedText = async (
+    req: AuthRequest,
+    res: Response,
+): Promise<void> => {
+    const {id} = req.params;
+    const document = await Document.findOne({
+        _id: id,
+        userId: req.userId,
+    }).select("extractedText");
+
+    if (!document) {
+        res.status(404).json({message: "Document not found"});
+        return;
+    }
+
+    res.status(200).json({
+        extractedText: document.extractedText || null,
+        hasExtractedText: !!document.extractedText,
+    });
 };
