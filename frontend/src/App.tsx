@@ -6,11 +6,11 @@ import Register from "./components/auth/Register";
 import Navbar from "./components/shared/Navbar";
 import UploadZone from "./components/dashboard/UploadZone";
 import DocumentGrid from "./components/dashboard/DocumentGrid";
+import DocumentViewer from "./components/dashboard/DocumentViewer";
 import {
     uploadDocument,
     getDocuments,
     deleteDocument,
-    getDocumentUrl,
 } from "./services/documentService";
 import {Document} from "./types";
 
@@ -38,6 +38,9 @@ const Dashboard: React.FC = () => {
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(
+        null,
+    );
 
     useEffect(() => {
         fetchDocuments();
@@ -65,7 +68,9 @@ const Dashboard: React.FC = () => {
                 console.log(`Upload progress: ${progress}%`);
             });
 
-            setSuccess("Document uploaded successfully!");
+            setSuccess(
+                "Document uploaded successfully! Text extraction in progress...",
+            );
             await fetchDocuments();
         } catch (err: any) {
             setError(
@@ -76,13 +81,8 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    const handleView = async (id: string) => {
-        try {
-            const {url} = await getDocumentUrl(id);
-            window.open(url, "_blank");
-        } catch (err: any) {
-            setError("Failed to load document");
-        }
+    const handleView = (id: string) => {
+        setSelectedDocumentId(id);
     };
 
     const handleDelete = async (id: string) => {
@@ -104,7 +104,7 @@ const Dashboard: React.FC = () => {
                         My Documents
                     </h1>
                     <p className="text-gray-600">
-                        Upload and manage your documents
+                        Upload and manage your documents with AI text extraction
                     </p>
                 </div>
 
@@ -130,6 +130,13 @@ const Dashboard: React.FC = () => {
                     onDelete={handleDelete}
                     loading={loading}
                 />
+
+                {selectedDocumentId && (
+                    <DocumentViewer
+                        documentId={selectedDocumentId}
+                        onClose={() => setSelectedDocumentId(null)}
+                    />
+                )}
             </div>
         </div>
     );
