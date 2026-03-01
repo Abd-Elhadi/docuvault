@@ -58,3 +58,13 @@ export const getDocumentUrl = async (id: string): Promise<{url: string}> => {
 export const deleteDocument = async (id: string): Promise<void> => {
     await api.delete(`/documents/${id}`);
 };
+
+export const getExtractedText = async (
+    id: string,
+): Promise<{
+    extractedText: string | null;
+    hasExtractedText: boolean;
+}> => {
+    const response = await api.get(`/documents/${id}/text`);
+    return response.data;
+};
